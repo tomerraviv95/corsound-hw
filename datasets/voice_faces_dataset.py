@@ -1,3 +1,7 @@
+from datasets.person import Person
+from utils import get_person_name_from_key, list_splitter
+
+
 class VoiceFacesDataset:
     def __init__(self, audio_embeddings, image_embeddings, train_ratio=0.8):
         names_from_image_embeddings = list(set(map(get_person_name_from_key, list(image_embeddings.keys()))))
