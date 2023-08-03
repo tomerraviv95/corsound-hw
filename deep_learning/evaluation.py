@@ -1,7 +1,16 @@
 import torch
+from torch import nn
+from torch.utils.data import DataLoader
 
 
-def calculate_cur_identification_accuracy(out_a, out_p, out_n):
+def calculate_cur_identification_accuracy(out_a: torch.Tensor, out_p: torch.Tensor, out_n: torch.Tensor) -> int:
+    """
+    Calculates the measure of identification accuracy
+    :param out_a: batch of anchor samples
+    :param out_p: batch of positives samples
+    :param out_n: batch of negatives samples
+    :return: number of correct decisions, where dist(a,p) < dist(a,n) as desired
+    """
     cur_correct_decisions = 0
     for a, p, n in zip(out_a, out_p, out_n):
         p_dist = torch.dist(a, p).item()
@@ -12,9 +21,10 @@ def calculate_cur_identification_accuracy(out_a, out_p, out_n):
     return cur_correct_decisions
 
 
-def evaluate(val_dataloader, net):
+def evaluate(val_dataloader: DataLoader, net: nn.Module):
     net.eval()
     correct_decisions = 0
+    # calculate the measure over batches, aggregate at the end
     for batch_idx, batch in enumerate(val_dataloader):
         pos_audios, pos_images, neg_images = batch  # anchor, positive, negative
         if torch.cuda.is_available():
