@@ -2,7 +2,6 @@ from typing import Tuple
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class Network(nn.Module):
@@ -39,7 +38,4 @@ class Network(nn.Module):
         :return: tuple of outputs, running each input through the network in an iid manner of the rest
         """
         # normalize the inputs to the network before processing
-        norm_pos_audios = F.normalize(pos_audios, dim=0, p=2)
-        norm_pos_images = F.normalize(pos_images, dim=0, p=2)
-        norm_neg_images = F.normalize(neg_images, dim=0, p=2)
-        return self.audio_fc(norm_pos_audios), self.image_fc(norm_pos_images), self.image_fc(norm_neg_images)
+        return self.audio_fc(pos_audios), self.image_fc(pos_images), self.image_fc(neg_images)
