@@ -25,6 +25,7 @@ def evaluate(val_dataloader: DataLoader, net: nn.Module):
     net.eval()
     correct_decisions = 0
     # calculate the measure over batches, aggregate at the end
+    print('*' * 20)
     for batch_idx, batch in enumerate(val_dataloader):
         pos_audios, pos_images, neg_images = batch  # anchor, positive, negative
         if torch.cuda.is_available():
@@ -33,4 +34,4 @@ def evaluate(val_dataloader: DataLoader, net: nn.Module):
         cur_correct_decisions = calculate_cur_identification_accuracy(out_a, out_p, out_n)
         correct_decisions += cur_correct_decisions
     correct_decisions /= (1 + batch_idx)
-    print(f"Total correct decisions: {correct_decisions}")
+    print(f"Identification accuracy on the dataset: {correct_decisions}")
