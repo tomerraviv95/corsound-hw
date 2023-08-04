@@ -16,10 +16,10 @@ SEED = 100
 BATCH_SIZE = 64
 TRAIN_TRIPLETS = 10000
 VAL_TRIPLETS = 5000
-TEST_TRIPLETS = 5000
 LEARNING_RATE = 1e-3
 MAX_EPOCHS = 20
-TEST_FLAG = True
+TEST_TRIPLETS = 5000
+TEST_FLAG = False
 
 random.seed(SEED)
 torch.manual_seed(SEED)
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     audio_embeddings = pickle.load(open('data/audio_embeddings.pickle', 'rb'))
     image_embeddings = pickle.load(open('data/image_embeddings.pickle', 'rb'))
 
-    # For the purpose of the test
+    # For the purpose of the test - change the pickles here to the test ones
     if TEST_FLAG:
         test_audio_embeddings = pickle.load(open('data/test_audio_embeddings.pickle', 'rb'))
         test_image_embeddings = pickle.load(open('data/test_image_embeddings.pickle', 'rb'))
@@ -56,6 +56,7 @@ if __name__ == "__main__":
     train(train_dataloader, optimizer, triplet_loss, net, MAX_EPOCHS)
     evaluate(val_dataloader, net)
 
+    # if test flag is activated, run the pipeline on it to calculate the identification accuracy
     if TEST_FLAG:
         test_voice_faces_dataset = VoiceFacesDataset(audio_embeddings, image_embeddings, train_ratio=0)
         test_identity_triplet_dataset = IdentityTripletDataset(persons_list=test_voice_faces_dataset.val_persons_list,
