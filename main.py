@@ -11,13 +11,15 @@ from datasets.voice_faces_dataset import VoiceFacesDataset
 from deep_learning.evaluation import evaluate
 from deep_learning.network import Network
 from deep_learning.training import train
+from dir_paths import TRAIN_VAL_AUDIO_EMBEDDINGS, TRAIN_VAL_IMAGE_EMBEDDINGS, TEST_AUDIO_EMBEDDINGS, \
+    TEST_IMAGE_EMBEDDINGS
 
 SEED = 100
 BATCH_SIZE = 64
 TRAIN_TRIPLETS = 10000
 VAL_TRIPLETS = 5000
 LEARNING_RATE = 1e-3
-MAX_EPOCHS = 20
+MAX_EPOCHS = 5
 TEST_TRIPLETS = 5000
 TEST_FLAG = False
 
@@ -28,13 +30,13 @@ np.random.seed(SEED)
 
 if __name__ == "__main__":
     # Load embeddings
-    audio_embeddings = pickle.load(open('data/audio_embeddings.pickle', 'rb'))
-    image_embeddings = pickle.load(open('data/image_embeddings.pickle', 'rb'))
+    audio_embeddings = pickle.load(open(TRAIN_VAL_AUDIO_EMBEDDINGS, 'rb'))
+    image_embeddings = pickle.load(open(TRAIN_VAL_IMAGE_EMBEDDINGS, 'rb'))
 
     # For the purpose of the test - change the pickles here to the test ones
     if TEST_FLAG:
-        test_audio_embeddings = pickle.load(open('data/test_audio_embeddings.pickle', 'rb'))
-        test_image_embeddings = pickle.load(open('data/test_image_embeddings.pickle', 'rb'))
+        test_audio_embeddings = pickle.load(open(TEST_AUDIO_EMBEDDINGS, 'rb'))
+        test_image_embeddings = pickle.load(open(TEST_IMAGE_EMBEDDINGS, 'rb'))
 
     # Create the train and validation datasets of triplets
     voice_faces_dataset = VoiceFacesDataset(audio_embeddings, image_embeddings)
@@ -54,6 +56,7 @@ if __name__ == "__main__":
 
     # Train and validate the Network
     train(train_dataloader, optimizer, triplet_loss, net, MAX_EPOCHS)
+    print('Validation')
     evaluate(val_dataloader, net)
 
     # if test flag is activated, run the pipeline on it to calculate the identification accuracy
@@ -62,4 +65,5 @@ if __name__ == "__main__":
         test_identity_triplet_dataset = IdentityTripletDataset(persons_list=test_voice_faces_dataset.val_persons_list,
                                                                triplets_n=TEST_TRIPLETS)
         test_dataloader = DataLoader(test_identity_triplet_dataset, batch_size=BATCH_SIZE, shuffle=True)
+        print('Test')
         evaluate(test_dataloader, net)

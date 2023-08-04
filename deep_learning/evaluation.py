@@ -3,7 +3,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 
 
-def calculate_cur_identification_accuracy(out_a: torch.Tensor, out_p: torch.Tensor, out_n: torch.Tensor) -> int:
+def calculate_identification_accuracy(out_a: torch.Tensor, out_p: torch.Tensor, out_n: torch.Tensor) -> int:
     """
     Calculates the measure of identification accuracy
     :param out_a: batch of anchor samples
@@ -21,9 +21,9 @@ def calculate_cur_identification_accuracy(out_a: torch.Tensor, out_p: torch.Tens
     return cur_correct_decisions
 
 
-def evaluate(val_dataloader: DataLoader, net: nn.Module):
+def evaluate(val_dataloader: DataLoader, net: nn.Module) -> float:
     net.eval()
-    correct_decisions = 0
+    identification_acc = 0
     # calculate the measure over batches, aggregate at the end
     print('*' * 20)
     for batch_idx, batch in enumerate(val_dataloader):
@@ -31,7 +31,8 @@ def evaluate(val_dataloader: DataLoader, net: nn.Module):
         if torch.cuda.is_available():
             pos_audios, pos_images, neg_images = pos_audios.cuda(), pos_images.cuda(), neg_images.cuda()
         out_a, out_p, out_n = net(pos_audios, pos_images, neg_images)
-        cur_correct_decisions = calculate_cur_identification_accuracy(out_a, out_p, out_n)
-        correct_decisions += cur_correct_decisions
-    correct_decisions /= (1 + batch_idx)
-    print(f"Identification accuracy on the dataset: {correct_decisions}")
+        cur_identification_acc = calculate_identification_accuracy(out_a, out_p, out_n)
+        identification_acc += cur_identification_acc
+    identification_acc /= (1 + batch_idx)
+    print(f"Identification accuracy on the dataset: {identification_acc}")
+    return identification_acc
