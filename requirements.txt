@@ -30,7 +30,7 @@ packaging @ file:///C:/b/abs_cfsup8ur87/croot/packaging_1671697442297/work
 parso @ file:///opt/conda/conda-bld/parso_1641458642106/work
 pickle5==0.0.12
 pickleshare @ file:///tmp/build/80754af9/pickleshare_1606932040724/work
-Pillow==9.0.0
+Pillow==10.0.1
 prompt-toolkit @ file:///C:/b/abs_6coz5_9f2s/croot/prompt-toolkit_1672387908312/work
 protobuf==3.20.3
 psutil @ file:///C:/Windows/Temp/abs_b2c2fd7f-9fd5-4756-95ea-8aed74d0039flsd9qufz/croots/recipe/psutil_1656431277748/work
